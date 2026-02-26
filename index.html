@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacker Bob</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="logo"><img src="base.png" alt="Bob" style="height: 24px; vertical-align: middle; margin-right: 8px;">Hacker Bob</div>
+        <div class="stats">
+            <div class="stat-badge coin" title="Missioni Completate">🪙 <span id="val-streak" style="display:inline-block;">0</span></div>
+            <div class="stat-badge star">⭐ <span id="val-xp">0</span> XP</div>
+        </div>
+    </header>
+
+    <section id="view-home" class="view-layer active">
+        <div class="wrapper">
+            <div class="mascot-greeting card">
+                <img src="base.png" alt="Bob" class="mascot-img">
+                <div class="greeting-text">
+                    <h2>Ciao, sono Bob!</h2>
+                    <p>Scegli una lezione e iniziamo ad esplorare il computer.</p>
+                </div>
+            </div>
+            <div class="progress-global card">
+                <h3>Il tuo percorso</h3>
+                <div class="track"><div class="fill" id="global-progress-bar"></div></div>
+            </div>
+            <div id="modules-container" class="grid-list"></div>
+        </div>
+    </section>
+
+    <section id="view-missions" class="view-layer">
+        <div class="wrapper">
+            <div class="nav-header">
+                <button class="btn-icon" id="btn-back-home">⬅</button>
+                <div>
+                    <h2 id="module-title-display">Modulo</h2>
+                    <p id="module-desc-display" class="subtitle">Descrizione</p>
+                </div>
+            </div>
+            <div id="missions-container" class="grid-list"></div>
+        </div>
+    </section>
+
+    <section id="view-exercise" class="view-layer">
+        <div class="wrapper-wide">
+            <div class="exercise-header">
+                <button class="btn-icon" id="btn-quit-exercise">✖</button>
+                <div class="track flex-grow"><div class="fill" id="exercise-progress-bar"></div></div>
+                <div class="lives" id="lives-display"></div>
+            </div>
+            <div class="mascot-reaction">
+                <img src="base.png" id="exercise-mascot" alt="Mascot">
+            </div>
+            <div id="exercise-dynamic-area"></div>
+            <div class="action-footer">
+                <button id="btn-main-action" class="btn-primary" disabled>Verifica</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="view-victory" class="view-layer">
+        <div class="wrapper text-center">
+            <img src="felice.png" class="victory-img" alt="Vittoria">
+            <h1 class="text-green">Lezione Completata!</h1>
+            <p id="victory-mission-name" class="subtitle">Nome missione</p>
+            <div class="huge-stars" id="victory-stars">⭐⭐⭐</div>
+            <div class="stats-grid">
+                <div class="card stat-card">
+                    <span class="text-orange val" id="victory-xp">+0</span>
+                    <span class="lbl">XP</span>
+                </div>
+                <div class="card stat-card">
+                    <span class="text-red val" id="victory-errors">0</span>
+                    <span class="lbl">Errori</span>
+                </div>
+            </div>
+            <button class="btn-primary mt-20" id="btn-victory-continue">Continua</button>
+        </div>
+    </section>
+
+    <div id="feedback-drawer" class="bottom-drawer">
+        <div class="drawer-content">
+            <div class="drawer-icon" id="fb-icon"></div>
+            <div class="drawer-text">
+                <h3 id="fb-title"></h3>
+                <p id="fb-msg"></p>
+            </div>
+            <button id="btn-drawer-next" class="btn-solid">Avanti</button>
+        </div>
+    </div>
+
+    <div id="overlay-gameover" class="fullscreen-lock hidden">
+        <img src="rotto.png" alt="Rotto">
+        <h1 class="text-red">Bob è esausto!</h1>
+        <p>Hai finito le vite. Il computer ha bisogno di riposare.</p>
+        <div id="penalty-timer" class="timer-display">60</div>
+    </div>
+
+    <script src="curriculum.js"></script>
+    <script src="engine.js"></script>
+
+<!-- INIZIO PATCH GRAFICO PER ESERCIZI REALISTICI -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Funzione helper per aggiungere elementi nei template giusti senza rompere l'HTML esistente
+    const addIfMissing = (templatePartialId, htmlString) => {
+        // Cerca il template usando varie convenzioni comuni (id o classe)
+        const container = document.querySelector(`[id*="${templatePartialId}"]`) || document.querySelector(`[class*="${templatePartialId}"]`);
+        if (container) {
+            container.insertAdjacentHTML('beforeend', htmlString);
+        }
+    };
+    
+    // 1. Aggiunte alla cartella Explorer
+    const explorerHtml = `
+        <div id="file-foto" class="sim-icon" draggable="true" style="display:inline-block; margin: 15px; text-align: center; cursor: pointer;">🤐<br>Foto_Vacanze.zip</div>
+        <div id="folder-lavoro" class="sim-icon" style="display:inline-block; margin: 15px; text-align: center; cursor: pointer;">📁<br>Lavoro</div>
+        <div id="file-contratto" class="sim-icon" style="display:inline-block; margin: 15px; text-align: center; cursor: pointer;">📄<br>Lettera.docx</div>
+        <div id="file-ricevuta" class="sim-icon" style="display:inline-block; margin: 15px; text-align: center; cursor: pointer;">🧾<br>Ricevuta_Amazon.pdf</div>
+        <div id="file-vecchio" class="sim-icon" draggable="true" style="display:inline-block; margin: 15px; text-align: center; cursor: pointer;">🗑️<br>Ricevuta_Vecchia.pdf</div>
+        <button id="btn-extract-confirm" class="btn-primary" style="position: absolute; bottom: 20px; right: 20px; z-index: 100;">Estrai Tutto Qui</button>
+    `;
+    addIfMissing('explorer', explorerHtml);
+
+    // 2. Aggiunte al Desktop (Icona Volume)
+    const desktopHtml = `<div id="icon-volume" class="taskbar-volume" title="Volume">🔊</div>`;
+    addIfMissing('desktop', desktopHtml);
+
+    // 3. Aggiunte all'Email (Pulsante Allega)
+    const emailHtml = `<button id="btn-attach" class="btn-secondary" style="margin-left: 10px; background: #95a5a6;">📎 Allega</button>`;
+    addIfMissing('email', emailHtml);
+
+    // 4. Creazione da zero del template Word Sim (Anteprima di stampa)
+    if (!document.querySelector('[id*="word_sim"]')) {
+        const wordHtml = `
+        <div id="template-word_sim" class="sim-template hidden" style="width:100%; height:100%; background:#e0e0e0; position:relative; z-index: 10;">
+            <div class="word-header">
+                <button id="btn-file">File</button>
+                <button id="btn-print">Stampa</button>
+            </div>
+            <div class="word-page">
+                <h3 style="margin-top:0;">Oggetto: Invio Documentazione</h3>
+                <p>Gentile Commercialista,</p>
+                <p>In allegato trova la documentazione richiesta convertita in formato PDF come da accordi telefonici.</p>
+                <p>Cordiali saluti.</p>
+            </div>
+        </div>`;
+        
+        // Aggiungiamo il template al contenitore principale dell'esercizio
+        const exArea = document.getElementById('exercise-dynamic-area') || document.body;
+        exArea.insertAdjacentHTML('beforeend', wordHtml);
+    }
+});
+</script>
+<!-- FINE PATCH GRAFICO -->
+</body>
+
+</html>
